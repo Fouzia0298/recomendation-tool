@@ -20,7 +20,7 @@
         }
         
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
         }
         
@@ -126,15 +126,52 @@
             background: #1f1f1f;
             border: 1px solid #374151;
             border-radius: 12px;
-            padding: 25px;
-            margin-bottom: 20px;
+            padding: 0;
+            margin-bottom: 25px;
             transition: all 0.3s;
+            overflow: hidden;
+            display: flex;
+            flex-direction: row;
+            gap: 20px;
         }
         
         .movie-card:hover {
             background: #2a2a2a;
             border-color: #22c55e;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(34, 197, 94, 0.3);
+        }
+
+        .movie-poster {
+            width: 200px;
+            min-width: 200px;
+            height: 300px;
+            object-fit: cover;
+            background: #374151;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .movie-poster img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .movie-poster-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+        }
+
+        .movie-content {
+            flex: 1;
+            padding: 25px;
         }
         
         .movie-title {
@@ -176,6 +213,14 @@
             }
             .form-container {
                 padding: 20px;
+            }
+            .movie-card {
+                flex-direction: column;
+            }
+            .movie-poster {
+                width: 100%;
+                min-width: 100%;
+                height: 400px;
             }
         }
     </style>
@@ -237,73 +282,87 @@
     </div>
 
     <script>
+        const TMDB_API_KEY = '26ded9307bb8b32df60000d59785e70e';
+        const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p/w500';
+
         const movieDatabase = {
             action: [
-                { title: "Mad Max: Fury Road", year: "2015", description: "In a post-apocalyptic wasteland, a woman rebels against a tyrannical ruler in search for her homeland with the help of a group of female prisoners and a drifter named Max. Non-stop action with stunning visuals and minimal dialogue that speaks volumes." },
-                { title: "The Dark Knight", year: "2008", description: "Batman raises the stakes in his war on crime with the help of Lt. Jim Gordon and District Attorney Harvey Dent, but a psychopathic criminal mastermind known as the Joker threatens to plunge Gotham into anarchy. A superhero film that transcends its genre with complex moral themes." },
-                { title: "John Wick", year: "2014", description: "An ex-hitman comes out of retirement to track down the gangsters that killed his dog and took everything from him. Stylish action choreography with a surprisingly emotional core and world-building that launched a franchise." },
-                { title: "Mission: Impossible - Fallout", year: "2018", description: "Ethan Hunt and his team race against time after a mission gone wrong, facing consequences that threaten the entire world. Breathtaking practical stunts and intense action sequences." },
-                { title: "The Raid", year: "2011", description: "A SWAT team becomes trapped in a tenement run by a ruthless mobster and his army of killers. Indonesian martial arts action that redefined the genre with incredible fight choreography." }
+                { title: "Mad Max: Fury Road", year: "2015", tmdbId: 76341, description: "In a post-apocalyptic wasteland, a woman rebels against a tyrannical ruler in search for her homeland with the help of a group of female prisoners and a drifter named Max. Non-stop action with stunning visuals and minimal dialogue that speaks volumes." },
+                { title: "The Dark Knight", year: "2008", tmdbId: 155, description: "Batman raises the stakes in his war on crime with the help of Lt. Jim Gordon and District Attorney Harvey Dent, but a psychopathic criminal mastermind known as the Joker threatens to plunge Gotham into anarchy. A superhero film that transcends its genre with complex moral themes." },
+                { title: "John Wick", year: "2014", tmdbId: 245891, description: "An ex-hitman comes out of retirement to track down the gangsters that killed his dog and took everything from him. Stylish action choreography with a surprisingly emotional core and world-building that launched a franchise." },
+                { title: "Mission: Impossible - Fallout", year: "2018", tmdbId: 353081, description: "Ethan Hunt and his team race against time after a mission gone wrong, facing consequences that threaten the entire world. Breathtaking practical stunts and intense action sequences." },
+                { title: "The Raid", year: "2011", tmdbId: 94329, description: "A SWAT team becomes trapped in a tenement run by a ruthless mobster and his army of killers. Indonesian martial arts action that redefined the genre with incredible fight choreography." }
             ],
             comedy: [
-                { title: "The Grand Budapest Hotel", year: "2014", description: "The adventures of Gustave H, a legendary concierge at a famous European hotel, and Zero Moustafa, the lobby boy who becomes his most trusted friend. Wes Anderson's signature visual style meets quirky humor and heartfelt storytelling." },
-                { title: "Knives Out", year: "2019", description: "A detective investigates the death of a patriarch of an eccentric, combative family in this clever whodunit. Sharp wit, stellar ensemble cast, and surprising social commentary wrapped in a murder mystery." },
-                { title: "Everything Everywhere All at Once", year: "2022", description: "An aging Chinese immigrant is swept up in an insane adventure where she must connect with parallel universe versions of herself to prevent a powerful being from destroying the multiverse. Wildly imaginative comedy that's also deeply moving." },
-                { title: "Hot Fuzz", year: "2007", description: "A skilled London police officer is transferred to a seemingly quiet village that hides dark secrets. Brilliant blend of action and comedy with clever writing and perfect comedic timing." },
-                { title: "Amélie", year: "2001", description: "A shy waitress decides to change the lives of those around her for the better while dealing with her own isolation. Whimsical French comedy with stunning visuals and heartwarming moments." }
+                { title: "The Grand Budapest Hotel", year: "2014", tmdbId: 120467, description: "The adventures of Gustave H, a legendary concierge at a famous European hotel, and Zero Moustafa, the lobby boy who becomes his most trusted friend. Wes Anderson's signature visual style meets quirky humor and heartfelt storytelling." },
+                { title: "Knives Out", year: "2019", tmdbId: 546554, description: "A detective investigates the death of a patriarch of an eccentric, combative family in this clever whodunit. Sharp wit, stellar ensemble cast, and surprising social commentary wrapped in a murder mystery." },
+                { title: "Everything Everywhere All at Once", year: "2022", tmdbId: 545611, description: "An aging Chinese immigrant is swept up in an insane adventure where she must connect with parallel universe versions of herself to prevent a powerful being from destroying the multiverse. Wildly imaginative comedy that's also deeply moving." },
+                { title: "Hot Fuzz", year: "2007", tmdbId: 4638, description: "A skilled London police officer is transferred to a seemingly quiet village that hides dark secrets. Brilliant blend of action and comedy with clever writing and perfect comedic timing." },
+                { title: "Amélie", year: "2001", tmdbId: 194, description: "A shy waitress decides to change the lives of those around her for the better while dealing with her own isolation. Whimsical French comedy with stunning visuals and heartwarming moments." }
             ],
             drama: [
-                { title: "The Shawshank Redemption", year: "1994", description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency. A powerful story of hope, friendship, and the human spirit that endures." },
-                { title: "Parasite", year: "2019", description: "Greed and class discrimination threaten the newly formed symbiotic relationship between a wealthy family and a poor family who infiltrate their household. Masterful blend of genres with sharp social commentary that won Best Picture." },
-                { title: "Moonlight", year: "2016", description: "A young African-American man grapples with his identity and sexuality while experiencing the hardships of childhood, adolescence, and burgeoning adulthood. Beautiful, intimate storytelling told in three acts." },
-                { title: "12 Years a Slave", year: "2013", description: "In the antebellum United States, Solomon Northup, a free Black man from upstate New York, is abducted and sold into slavery. Powerful and unflinching portrayal of a dark chapter in American history." },
-                { title: "The Father", year: "2020", description: "A man refuses assistance from his daughter as he ages, experiencing confusion and memory loss. Anthony Hopkins delivers a masterful performance in this emotionally devastating portrait of dementia." }
+                { title: "The Shawshank Redemption", year: "1994", tmdbId: 278, description: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency. A powerful story of hope, friendship, and the human spirit that endures." },
+                { title: "Parasite", year: "2019", tmdbId: 496243, description: "Greed and class discrimination threaten the newly formed symbiotic relationship between a wealthy family and a poor family who infiltrate their household. Masterful blend of genres with sharp social commentary that won Best Picture." },
+                { title: "Moonlight", year: "2016", tmdbId: 376867, description: "A young African-American man grapples with his identity and sexuality while experiencing the hardships of childhood, adolescence, and burgeoning adulthood. Beautiful, intimate storytelling told in three acts." },
+                { title: "12 Years a Slave", year: "2013", tmdbId: 76203, description: "In the antebellum United States, Solomon Northup, a free Black man from upstate New York, is abducted and sold into slavery. Powerful and unflinching portrayal of a dark chapter in American history." },
+                { title: "The Father", year: "2020", tmdbId: 615457, description: "A man refuses assistance from his daughter as he ages, experiencing confusion and memory loss. Anthony Hopkins delivers a masterful performance in this emotionally devastating portrait of dementia." }
             ],
             horror: [
-                { title: "Get Out", year: "2017", description: "A young African-American man visits his white girlfriend's family estate where he uncovers a disturbing secret about the family and their servants. Social horror that's as thought-provoking as it is terrifying." },
-                { title: "Hereditary", year: "2018", description: "After the family matriarch passes away, a grieving family is haunted by tragic and disturbing occurrences that unravel dark secrets. Atmospheric dread that builds to a shocking and unforgettable climax." },
-                { title: "A Quiet Place", year: "2018", description: "In a post-apocalyptic world, a family is forced to live in silence while hiding from creatures that hunt by sound. Tense, innovative horror with genuine emotional stakes and brilliant sound design." },
-                { title: "The Witch", year: "2015", description: "A family in 1630s New England is torn apart by the forces of witchcraft, black magic, and possession. Slow-burn period horror with meticulous attention to historical detail and mounting paranoia." },
-                { title: "Midsommar", year: "2019", description: "A couple travels to Sweden to visit a rural hometown's fabled midsummer festival, which takes a sinister turn. Folk horror set in broad daylight with stunning visuals and disturbing imagery." }
+                { title: "Get Out", year: "2017", tmdbId: 419430, description: "A young African-American man visits his white girlfriend's family estate where he uncovers a disturbing secret about the family and their servants. Social horror that's as thought-provoking as it is terrifying." },
+                { title: "Hereditary", year: "2018", tmdbId: 493922, description: "After the family matriarch passes away, a grieving family is haunted by tragic and disturbing occurrences that unravel dark secrets. Atmospheric dread that builds to a shocking and unforgettable climax." },
+                { title: "A Quiet Place", year: "2018", tmdbId: 447332, description: "In a post-apocalyptic world, a family is forced to live in silence while hiding from creatures that hunt by sound. Tense, innovative horror with genuine emotional stakes and brilliant sound design." },
+                { title: "The Witch", year: "2015", tmdbId: 310131, description: "A family in 1630s New England is torn apart by the forces of witchcraft, black magic, and possession. Slow-burn period horror with meticulous attention to historical detail and mounting paranoia." },
+                { title: "Midsommar", year: "2019", tmdbId: 530385, description: "A couple travels to Sweden to visit a rural hometown's fabled midsummer festival, which takes a sinister turn. Folk horror set in broad daylight with stunning visuals and disturbing imagery." }
             ],
             "sci-fi": [
-                { title: "Arrival", year: "2016", description: "A linguist works with the military to communicate with alien lifeforms after twelve mysterious spacecraft appear around the world. Thoughtful sci-fi that explores language, time, and communication with emotional depth." },
-                { title: "Inception", year: "2010", description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O. Mind-bending visuals and complex narrative structure." },
-                { title: "Blade Runner 2049", year: "2017", description: "A young blade runner's discovery of a long-buried secret leads him to track down former blade runner Rick Deckard. Visually stunning with profound questions about humanity, memory, and identity." },
-                { title: "Ex Machina", year: "2014", description: "A young programmer is selected to participate in a groundbreaking experiment in synthetic intelligence by evaluating the human qualities of a humanoid A.I. Cerebral thriller about artificial intelligence and consciousness." },
-                { title: "Interstellar", year: "2014", description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. Epic space odyssey combining hard science with emotional storytelling about love and sacrifice." }
+                { title: "Arrival", year: "2016", tmdbId: 329865, description: "A linguist works with the military to communicate with alien lifeforms after twelve mysterious spacecraft appear around the world. Thoughtful sci-fi that explores language, time, and communication with emotional depth." },
+                { title: "Inception", year: "2010", tmdbId: 27205, description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O. Mind-bending visuals and complex narrative structure." },
+                { title: "Blade Runner 2049", year: "2017", tmdbId: 335984, description: "A young blade runner's discovery of a long-buried secret leads him to track down former blade runner Rick Deckard. Visually stunning with profound questions about humanity, memory, and identity." },
+                { title: "Ex Machina", year: "2014", tmdbId: 264660, description: "A young programmer is selected to participate in a groundbreaking experiment in synthetic intelligence by evaluating the human qualities of a humanoid A.I. Cerebral thriller about artificial intelligence and consciousness." },
+                { title: "Interstellar", year: "2014", tmdbId: 157336, description: "A team of explorers travel through a wormhole in space in an attempt to ensure humanity's survival. Epic space odyssey combining hard science with emotional storytelling about love and sacrifice." }
             ],
             romance: [
-                { title: "Before Sunrise", year: "1995", description: "A young man and woman meet on a train in Europe and spend one romantic night together in Vienna, talking and connecting deeply. Naturalistic dialogue creates profound intimacy in this modern romance classic." },
-                { title: "Portrait of a Lady on Fire", year: "2019", description: "On an isolated island in Brittany, a female painter is commissioned to paint a wedding portrait of a young woman who has just left a convent. Gorgeous cinematography and restrained yet passionate storytelling." },
-                { title: "Eternal Sunshine of the Spotless Mind", year: "2004", description: "When their relationship turns sour, a couple undergoes a medical procedure to have each other erased from their memories forever. Inventive narrative exploring love, loss, and the pain of memory." },
-                { title: "Call Me by Your Name", year: "2017", description: "In 1980s Italy, romance blossoms between a seventeen-year-old student and the older man hired as his father's research assistant. Achingly beautiful coming-of-age love story set against stunning Italian landscapes." },
-                { title: "The Notebook", year: "2004", description: "A poor yet passionate young man falls in love with a rich young woman, giving her a sense of freedom. They soon are separated by social differences and must reunite years later." }
+                { title: "Before Sunrise", year: "1995", tmdbId: 9603, description: "A young man and woman meet on a train in Europe and spend one romantic night together in Vienna, talking and connecting deeply. Naturalistic dialogue creates profound intimacy in this modern romance classic." },
+                { title: "Portrait of a Lady on Fire", year: "2019", tmdbId: 483897, description: "On an isolated island in Brittany, a female painter is commissioned to paint a wedding portrait of a young woman who has just left a convent. Gorgeous cinematography and restrained yet passionate storytelling." },
+                { title: "Eternal Sunshine of the Spotless Mind", year: "2004", tmdbId: 38, description: "When their relationship turns sour, a couple undergoes a medical procedure to have each other erased from their memories forever. Inventive narrative exploring love, loss, and the pain of memory." },
+                { title: "Call Me by Your Name", year: "2017", tmdbId: 341013, description: "In 1980s Italy, romance blossoms between a seventeen-year-old student and the older man hired as his father's research assistant. Achingly beautiful coming-of-age love story set against stunning Italian landscapes." },
+                { title: "The Notebook", year: "2004", tmdbId: 11036, description: "A poor yet passionate young man falls in love with a rich young woman, giving her a sense of freedom. They soon are separated by social differences and must reunite years later." }
             ],
             thriller: [
-                { title: "Gone Girl", year: "2014", description: "With his wife's disappearance having become the focus of an intense media circus, a man sees the spotlight turned on him when suspicions arise. Twisty psychological thriller with commentary on marriage and media." },
-                { title: "Prisoners", year: "2013", description: "When Keller Dover's daughter and her friend go missing, he takes matters into his own hands as the police pursue multiple leads. Tense, morally complex thriller about desperation and justice." },
-                { title: "Zodiac", year: "2007", description: "A cartoonist becomes obsessed with tracking down the Zodiac Killer who terrorized the San Francisco Bay Area during the late 1960s and early 1970s. Meticulous, atmospheric procedural about obsession." },
-                { title: "Shutter Island", year: "2010", description: "A U.S. Marshal investigates the disappearance of a murderer who escaped from a hospital for the criminally insane. Psychological thriller with layers of mystery and a mind-bending twist." },
-                { title: "No Country for Old Men", year: "2007", description: "Violence and mayhem ensue after a hunter stumbles upon a drug deal gone wrong and takes the cash. Relentless thriller from the Coen Brothers with an unforgettable villain." }
+                { title: "Gone Girl", year: "2014", tmdbId: 210577, description: "With his wife's disappearance having become the focus of an intense media circus, a man sees the spotlight turned on him when suspicions arise. Twisty psychological thriller with commentary on marriage and media." },
+                { title: "Prisoners", year: "2013", tmdbId: 146233, description: "When Keller Dover's daughter and her friend go missing, he takes matters into his own hands as the police pursue multiple leads. Tense, morally complex thriller about desperation and justice." },
+                { title: "Zodiac", year: "2007", tmdbId: 1949, description: "A cartoonist becomes obsessed with tracking down the Zodiac Killer who terrorized the San Francisco Bay Area during the late 1960s and early 1970s. Meticulous, atmospheric procedural about obsession." },
+                { title: "Shutter Island", year: "2010", tmdbId: 11324, description: "A U.S. Marshal investigates the disappearance of a murderer who escaped from a hospital for the criminally insane. Psychological thriller with layers of mystery and a mind-bending twist." },
+                { title: "No Country for Old Men", year: "2007", tmdbId: 6977, description: "Violence and mayhem ensue after a hunter stumbles upon a drug deal gone wrong and takes the cash. Relentless thriller from the Coen Brothers with an unforgettable villain." }
             ],
             documentary: [
-                { title: "Free Solo", year: "2018", description: "Follow Alex Honnold as he attempts to become the first person to ever free solo climb El Capitan's 3,000-foot vertical rock face. Breathtaking cinematography documenting an incredible feat of human determination." },
-                { title: "13th", year: "2016", description: "An in-depth look at the prison system in the United States and how it reveals the nation's history of racial inequality. Powerful examination of systemic injustice directed by Ava DuVernay." },
-                { title: "My Octopus Teacher", year: "2020", description: "A filmmaker forges an unusual friendship with an octopus living in a South African kelp forest, learning as the animal shares the mysteries of her world. Meditative and surprisingly emotional nature documentary." },
-                { title: "Won't You Be My Neighbor?", year: "2018", description: "An exploration of the life, lessons, and legacy of Fred Rogers, the beloved host of the popular children's TV show. Heartwarming tribute to a man who changed children's television." },
-                { title: "The Act of Killing", year: "2012", description: "A documentary which challenges former Indonesian death-squad leaders to reenact their mass-killings in whichever cinematic genres they wish. Surreal and disturbing examination of genocide and memory." }
+                { title: "Free Solo", year: "2018", tmdbId: 504562, description: "Follow Alex Honnold as he attempts to become the first person to ever free solo climb El Capitan's 3,000-foot vertical rock face. Breathtaking cinematography documenting an incredible feat of human determination." },
+                { title: "13th", year: "2016", tmdbId: 410163, description: "An in-depth look at the prison system in the United States and how it reveals the nation's history of racial inequality. Powerful examination of systemic injustice directed by Ava DuVernay." },
+                { title: "My Octopus Teacher", year: "2020", tmdbId: 629542, description: "A filmmaker forges an unusual friendship with an octopus living in a South African kelp forest, learning as the animal shares the mysteries of her world. Meditative and surprisingly emotional nature documentary." },
+                { title: "Won't You Be My Neighbor?", year: "2018", tmdbId: 504131, description: "An exploration of the life, lessons, and legacy of Fred Rogers, the beloved host of the popular children's TV show. Heartwarming tribute to a man who changed children's television." },
+                { title: "The Act of Killing", year: "2012", tmdbId: 139567, description: "A documentary which challenges former Indonesian death-squad leaders to reenact their mass-killings in whichever cinematic genres they wish. Surreal and disturbing examination of genocide and memory." }
             ],
             animation: [
-                { title: "Spider-Man: Into the Spider-Verse", year: "2018", description: "Teen Miles Morales becomes Spider-Man of his reality and crosses paths with his counterparts from other dimensions to stop a threat. Revolutionary animation style with heartfelt story about finding your own path." },
-                { title: "Spirited Away", year: "2001", description: "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits where humans are changed into beasts. Studio Ghibli masterpiece of imagination." },
-                { title: "Coco", year: "2017", description: "Aspiring musician Miguel, confronted with his family's ancestral ban on music, enters the Land of the Dead to find his great-great-grandfather, a legendary singer. Vibrant celebration of Mexican culture and family." },
-                { title: "WALL-E", year: "2008", description: "In the distant future, a small waste-collecting robot inadvertently embarks on a space journey that will ultimately decide the fate of mankind. Pixar's environmental love story with minimal dialogue." },
-                { title: "Your Name", year: "2016", description: "Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart? Japanese anime with stunning visuals and emotional storytelling." }
+                { title: "Spider-Man: Into the Spider-Verse", year: "2018", tmdbId: 324857, description: "Teen Miles Morales becomes Spider-Man of his reality and crosses paths with his counterparts from other dimensions to stop a threat. Revolutionary animation style with heartfelt story about finding your own path." },
+                { title: "Spirited Away", year: "2001", tmdbId: 129, description: "During her family's move to the suburbs, a sullen 10-year-old girl wanders into a world ruled by gods, witches, and spirits where humans are changed into beasts. Studio Ghibli masterpiece of imagination." },
+                { title: "Coco", year: "2017", tmdbId: 354912, description: "Aspiring musician Miguel, confronted with his family's ancestral ban on music, enters the Land of the Dead to find his great-great-grandfather, a legendary singer. Vibrant celebration of Mexican culture and family." },
+                { title: "WALL-E", year: "2008", tmdbId: 10681, description: "In the distant future, a small waste-collecting robot inadvertently embarks on a space journey that will ultimately decide the fate of mankind. Pixar's environmental love story with minimal dialogue." },
+                { title: "Your Name", year: "2016", tmdbId: 372058, description: "Two strangers find themselves linked in a bizarre way. When a connection forms, will distance be the only thing to keep them apart? Japanese anime with stunning visuals and emotional storytelling." }
             ]
         };
 
-        function getRecommendations() {
+        async function fetchMoviePoster(tmdbId) {
+            try {
+                const response = await fetch(`https://api.themoviedb.org/3/movie/${tmdbId}?api_key=${TMDB_API_KEY}`);
+                const data = await response.json();
+                return data.poster_path ? `${TMDB_IMAGE_BASE}${data.poster_path}` : null;
+            } catch (error) {
+                console.error('Error fetching poster:', error);
+                return null;
+            }
+        }
+
+        async function getRecommendations() {
             const mood = document.getElementById('mood').value.toLowerCase();
             const genre = document.getElementById('genre').value;
             const era = document.getElementById('era').value;
@@ -313,7 +372,7 @@
             document.getElementById('results').innerHTML = '';
             document.getElementById('results').classList.remove('show');
             
-            setTimeout(() => {
+            setTimeout(async () => {
                 let selectedMovies = [];
                 
                 if (genre && movieDatabase[genre]) {
@@ -328,7 +387,15 @@
                 
                 selectedMovies = selectedMovies.sort(() => 0.5 - Math.random()).slice(0, 5);
                 
-                displayResults(selectedMovies, mood, genre, era, additional);
+                // Fetch posters for selected movies
+                const moviesWithPosters = await Promise.all(
+                    selectedMovies.map(async movie => ({
+                        ...movie,
+                        posterUrl: await fetchMoviePoster(movie.tmdbId)
+                    }))
+                );
+                
+                displayResults(moviesWithPosters, mood, genre, era, additional);
                 
                 document.getElementById('loading').style.display = 'none';
             }, 1500);
@@ -341,13 +408,21 @@
             
             movies.forEach(movie => {
                 const matchReason = generateMatchReason(movie, mood, genre, era, additional);
+                const posterHtml = movie.posterUrl 
+                    ? `<img src="${movie.posterUrl}" alt="${movie.title} poster">`
+                    : `<div class="movie-poster-placeholder">🎬</div>`;
                 
                 html += `
                     <div class="movie-card">
-                        <h3 class="movie-title">${movie.title} (${movie.year})</h3>
-                        <p class="movie-description">${movie.description}</p>
-                        <div class="match-reason">
-                            <span class="match-label">Why this matches:</span> ${matchReason}
+                        <div class="movie-poster">
+                            ${posterHtml}
+                        </div>
+                        <div class="movie-content">
+                            <h3 class="movie-title">${movie.title} (${movie.year})</h3>
+                            <p class="movie-description">${movie.description}</p>
+                            <div class="match-reason">
+                                <span class="match-label">Why this matches:</span> ${matchReason}
+                            </div>
                         </div>
                     </div>
                 `;
